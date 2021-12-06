@@ -3,16 +3,36 @@
 """
 Created on Fri Dec  3 11:17:55 2021
 
-@author: iwtm41_lokal
+@author: jfriedlein
 
 @todo
 - For vectorized umats and utans we need to change some things (umat_nbr is number and "v", ...)
+
+@note
+- The script was developed for Linux and has not yet been tested under Windows
+  (neither Windows-Python nor Windows-LS-Dyna). This will be tested soon.
+- The relevant differences in the object files for this script are the "#include ..."
+  in the Windows-LS-Dyna "dyn21*.f" files. However, inserting the normal "include ..." before them appears okay.
 """
 
 import os
 import shutil
+import subprocess
 
-       
+# From [https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal]
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+## USER-INPUT #################################################################       
 phrase_original = '_ORIGINAL'
 
 # R11.1
@@ -23,13 +43,21 @@ phrase_original = '_ORIGINAL'
 #ext_dyn21utan = '.f'
 #path_to_tmp_input_for_utan = ''
 
-## R9.20
+# R9.2
 path_to_dyn21 = '../ls-dyna_smp_d_r920_x64_redhat59_ifort131_usermat_MASK'
 name_dyn21umats = 'dyn21'
 ext_dyn21umats = '.f'
 name_dyn21utan = 'dyn21'
 ext_dyn21utan = '.f'
 path_to_tmp_input_for_utan = path_to_dyn21 + '/' + 'tmp_dyn21.f'
+
+# R10.2 mpp
+#path_to_dyn21 = '../ls-dyna_mpp_d_R10_2_0_x64_centos65_ifort160_sse2_intelmpi-2018_MASK'
+#name_dyn21umats = 'dyn21'
+#ext_dyn21umats = '.f'
+#name_dyn21utan = 'dyn21'
+#ext_dyn21utan = '.f'
+#path_to_tmp_input_for_utan = path_to_dyn21 + '/' + 'tmp_dyn21.f'
 
 name_content_umat_utan = 'content_umat_utan.f'
 path_to_content_umat_utan='.'+'/'+name_content_umat_utan
@@ -53,8 +81,17 @@ final_lines_subroutine.append('      end\n')
 phrase_subroutine_umat = '      subroutine umat'
 phrase_subroutine_utan = '      subroutine utan'
 
+
+## EXECUTION ##################################################################      
+# clear terminal [https://stackoverflow.com/questions/2084508/clear-terminal-in-python]
+os.system('cls' if os.name == 'nt' else 'clear')
+
+print("We operate on LS-Dyna release ",path_to_dyn21)
+
 # Check for existence of "content_umat_utan" file, which is essential for the script
-# @todo
+if os.path.isfile(path_to_content_umat_utan) != True:
+    print(bcolors.FAIL + "ERROR<< File '"+name_content_umat_utan+"' does not exist. Create this file or name it correctly." + bcolors.ENDC)
+    exit()
   
 path_to_used_content = path_to_content_umat_utan    
 
@@ -67,6 +104,7 @@ with open(path_to_content_umat_utan, 'r') as content_umat_utan: # read only
             utan_nbr = int(line_content[len(phrase_subroutine_utan):len(phrase_subroutine_utan)+2])
             list_of_content_utan_nbrs.append(utan_nbr)  
 
+print("The following utans will be replaced: ", list_of_content_utan_nbrs," ...")
 
 # for dyn21utan
 path_to_dyn21utan = path_to_dyn21+'/'+name_dyn21utan+ext_dyn21umats
@@ -115,7 +153,7 @@ with open(path_to_dyn21utan, 'w') as dyn21utan: # create new file or overwrite o
                             # Now that we found the routine to be overwritten, we can log that state
                             overwriting_subroutine = True
                             # To indicate which parts of the file have been overwritten we add markers
-                            dyn21utan.write(phrase_CUSTOM_SECTION_UMAT_START)
+                            dyn21utan.write(phrase_CUSTOM_SECTION_UTAN_START)
                             # To make sure the interfaces are good, we use the interface
                             # from the original file and replace ones from the "content_umat_utan" file
                             current_line = line_original
@@ -151,7 +189,8 @@ with open(path_to_dyn21utan, 'w') as dyn21utan: # create new file or overwrite o
                     overwriting_subroutine = False
 
                 line_counter = line_counter + 1
-
+                
+print("... utans replaced.")
 
 ## Check the existence of the "phrase_original" files
 # for dyn21umats
@@ -176,6 +215,8 @@ with open(path_to_content_umat_utan, 'r') as content_umat_utan: # read only
         if ( phrase_subroutine_umat in line_content ):
             umat_nbr = int(line_content[len(phrase_subroutine_umat):len(phrase_subroutine_umat)+2])
             list_of_content_umat_nbrs.append(umat_nbr)
+
+print("The following umats will be replaced: ", list_of_content_umat_nbrs, " ...")
 
 ## Read the "phrase_original" files, insert the content from "name_content_umat_utan" and save the merged file as the normal dyn21* files
 # for umats
@@ -243,9 +284,28 @@ with open(path_to_dyn21umats, 'w') as dyn21umats: # create new file or overwrite
                     overwriting_subroutine = False
 
                 line_counter = line_counter + 1
+
+print("... umats replaced.")
    
 
-# Outsourced, Todos:    
+## Compile the just modified Fortran files into the ls-dyna executable
+print(bcolors.OKBLUE + "\nExecute the command 'make' in the '"+path_to_dyn21+"' directory ...\n" + bcolors.ENDC)    
+      
+# Execute the command "make" in the "path_to_dyn21" directory
+process = subprocess.Popen(['make',path_to_dyn21], cwd=path_to_dyn21, shell=True)
+
+# Wait for the subprocess to finish
+exit_code = process.wait()
+if exit_code != 0:
+    print(bcolors.FAIL + "\n... 'make' failed.\n" + bcolors.ENDC)
+else:   
+    print(bcolors.OKGREEN + "\n... Finished 'make'.\n" + bcolors.ENDC)                
+
+
+# note: return as soon as all have finished "exit_codes = [p.wait() for p in p1, p2]" [https://coderedirect.com/questions/157584/wait-process-until-all-subprocess-finish]
+
+
+## Outsourced, Todos:    
 
 # The following is useless, because the files we call internally also use the old paths
 ## @todo Some people might use (include "../"), catch this, maybe also protect against different formatting (include  "../")
