@@ -18,6 +18,7 @@ Created on Fri Dec  3 11:17:55 2021
 import os
 import shutil
 import subprocess
+from datetime import datetime
 
 # From [https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal]
 class bcolors:
@@ -36,20 +37,20 @@ class bcolors:
 phrase_original = '_ORIGINAL'
 
 # R11.1
-#path_to_dyn21 = '../ls-dyna_smp_d_R11_1_0_x64_redhat65_ifort160_sse2_usermat_MASK'
-#name_dyn21umats = 'dyn21umats'
-#ext_dyn21umats = '.f'
-#name_dyn21utan = 'dyn21utan'
-#ext_dyn21utan = '.f'
-#path_to_tmp_input_for_utan = ''
+path_to_dyn21 = '../ls-dyna_smp_d_R11_1_0_x64_redhat65_ifort160_sse2_usermat_MASK'
+name_dyn21umats = 'dyn21umats'
+ext_dyn21umats = '.f'
+name_dyn21utan = 'dyn21utan'
+ext_dyn21utan = '.f'
+path_to_tmp_input_for_utan = ''
 
 # R9.2
-path_to_dyn21 = '../ls-dyna_smp_d_r920_x64_redhat59_ifort131_usermat_MASK'
-name_dyn21umats = 'dyn21'
-ext_dyn21umats = '.f'
-name_dyn21utan = 'dyn21'
-ext_dyn21utan = '.f'
-path_to_tmp_input_for_utan = path_to_dyn21 + '/' + 'tmp_dyn21.f'
+#path_to_dyn21 = '../ls-dyna_smp_d_r920_x64_redhat59_ifort131_usermat_MASK'
+#name_dyn21umats = 'dyn21'
+#ext_dyn21umats = '.f'
+#name_dyn21utan = 'dyn21'
+#ext_dyn21utan = '.f'
+#path_to_tmp_input_for_utan = path_to_dyn21 + '/' + 'tmp_dyn21.f'
 
 # R10.2 mpp
 #path_to_dyn21 = '../ls-dyna_mpp_d_R10_2_0_x64_centos65_ifort160_sse2_intelmpi-2018_MASK'
@@ -87,6 +88,9 @@ phrase_subroutine_utan = '      subroutine utan'
 os.system('cls' if os.name == 'nt' else 'clear')
 
 print("We operate on LS-Dyna release ",path_to_dyn21)
+now = datetime.now()
+current_time = now.strftime("%H:%M:%S")
+print("Current Time =", current_time)
 
 # Check for existence of "content_umat_utan" file, which is essential for the script
 if os.path.isfile(path_to_content_umat_utan) != True:
