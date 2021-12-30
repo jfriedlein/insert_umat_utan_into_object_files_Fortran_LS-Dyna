@@ -142,6 +142,7 @@ Second, we do the same for the umats that are either inserted into dyn21.f, wher
 
 If desired, we compile the Fortran files and wait for the end of the compilation to show a "failed" or "finished" message.
 
+##@todo## add a Doxygen documentation here
 
 ## todo
 - Currently, everything focuses on scalar umats, try this for vectorized ones (umatv)
