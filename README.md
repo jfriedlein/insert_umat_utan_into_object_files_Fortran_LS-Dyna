@@ -132,10 +132,17 @@ Finished execution.
 ```
 
 ## What happens in the background
+First, we work on the utans and collect all the utan numbers that shall be replaced by searching the "content_umat_utan.f" file for the phrases utan41, utan43, ... to get the utan_nbr = [41,43,...].
 
-creation of _Original file
-insert utan, umat
-unsym flag, so use existing subroutine
+We save the original dyn21-files with the name addition "_ORIGINAL" and use these versions as basis for all insertion. This means we start from the "_ORIGIINAL" file for each code insertion.
+
+Then we loop over the utan file and insert the include paths the the utan subroutines that shall be replaced.
+
+Second, we do the same for the umats that are either inserted into dyn21.f, where we've already changed the utans, or into the separate file "dyn21umats.f" depending on the release (chosen in instance of class LSD_release).
+
+If desired, we compile the Fortran files and wait for the end of the compilation to show a "failed" or "finished" message.
+
 
 ## todo
 - Currently, everything focuses on scalar umats, try this for vectorized ones (umatv)
+- The code is implemented very badly (about a hundred "if"s and flags) and does nothing more than work
