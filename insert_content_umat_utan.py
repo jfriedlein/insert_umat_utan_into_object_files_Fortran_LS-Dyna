@@ -350,6 +350,7 @@ for LSD_version in LSD_versions_to_be_inserted:
         else:   
             print(bcolors.OKGREEN + "\n... Finished 'make'.\n" + bcolors.ENDC)                
 
+print(bcolors.OKBLUE + "\nFinished execution." + bcolors.ENDC)    
 
 # note: return as soon as all have finished "exit_codes = [p.wait() for p in p1, p2]" [https://coderedirect.com/questions/157584/wait-process-until-all-subprocess-finish]
 
