@@ -5,7 +5,7 @@ A python script to enter umat and utan subroutines from a single file into multi
 We develop user-defined material models (umat) in LS-Dyna as Fortran routines. We would like to use the umats in different releases, for instance R9.2 and R11.1 and R10.2mpp. However, in LS-Dyna each release has its own object files (a folder with Fortran routines) and we would need to copy our umat into the Fortran files of each object version. To automate this process, the here provided python script automatically copies the content from a single file named "content_umat_utan.f" into all desired LS-Dyna object version.
 
 
-## Setup the files and folders
+## Set up the files and folders
 First, download the Python script "insert_content_umat_utan.py" and the Fortran file "content_umat_utan.f".
 
 Place both files into a folder named "insert_umat_utan_into_object_files_Fortran_LS-Dyna" (This folder should be automatically created once you download, pull or clone the repository.)
@@ -14,10 +14,9 @@ Download and extract all the LS-Dyna releases you want, for instance R11.1, R9.2
 
 Place the LS-Dyna releases and the "insert_umat_utan_into_object_files_Fortran_LS-Dyna" into one folder (this is probably not necessary, but the paths have not yet been tested for other folder structures). This folder should then look like this:
 
-"folder setup.png"
+<img src="https://github.com/jfriedlein/insert_umat_utan_into_object_files_Fortran_LS-Dyna/blob/main/folder%20setup.png" width="500">
 
-
-## Setup the Python script for your desired LS-Dyna releases
+## Set up the Python script for your desired LS-Dyna releases
 Open the "insert_content_umat_utan.py" file. Therein, you find a class called "LSD_release" that contains all relevant information for a specific LS-Dyna release. Look at the provided examples to see how to insert what. For instance the first entry is the path to the dyn21* files relative to the "insert_content_umat_utan.py" file. This is followed by the filenames for the umat and utans with their extension. For older releases, where everything is included in "dyn21.f", simply provide this name for both umat and utan and shown in the example for R9.2. Create such an instance for all the releases you want/need.
 
 In the list "LSD_versions_to_be_inserted" you can insert the names that shall be worked on. Here, for instance we want to insert our code from "content_umat_utan.f" into the releases named " LSD_R920_LT7", "LSD_R111_LT7" and "LSD_R130".
