@@ -100,7 +100,9 @@ c
 c
       return
       end
+
 ```
+Note: Always end the content_umat_utan file with an empty line (todo: make this error proof).
 
 ## Run: Insert your code into the selected releases
 Execute the Python script via the command window in its folder ("python3 insert_content_umat_utan.py"). The script will insert the Fortran code from "content_umat_utan.f" into the releases one by one, showing its action in the command window.
@@ -144,6 +146,12 @@ If desired, we compile the Fortran files and wait for the end of the compilation
 
 ##@todo## add a Doxygen documentation here
 
+## test
+- test (over-)writing files for utan=[] and tumat=[]
+
 ## todo
+- update with new file that also uses thumat (tumat)
+- note that utan and tumat are only inserted if new versions exist, else the orginial files will be overwritten
+- pass additional arguments from urmath to umatXX, for instance by changing each "call umat41 (..., ih, nhv)" in the dyn21umat.f
 - Currently, everything focuses on scalar umats, try this for vectorized ones (umatv)
 - The code is implemented very badly (about a hundred "if"s and flags) and does nothing more than work
