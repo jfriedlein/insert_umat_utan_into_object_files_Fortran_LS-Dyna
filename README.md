@@ -155,3 +155,4 @@ If desired, we compile the Fortran files and wait for the end of the compilation
 - pass additional arguments from urmath to umatXX, for instance by changing each "call umat41 (..., ih, nhv)" in the dyn21umat.f
 - Currently, everything focuses on scalar umats, try this for vectorized ones (umatv)
 - The code is implemented very badly (about a hundred "if"s and flags) and does nothing more than work
+- content_umat_utan file needs to have empty line in the end, so that all insertions work properly
