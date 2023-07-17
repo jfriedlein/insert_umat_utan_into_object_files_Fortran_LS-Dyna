@@ -156,3 +156,4 @@ If desired, we compile the Fortran files and wait for the end of the compilation
 - Currently, everything focuses on scalar umats, try this for vectorized ones (umatv)
 - The code is implemented very badly (about a hundred "if"s and flags) and does nothing more than work
 - content_umat_utan file needs to have empty line in the end, so that all insertions work properly
+- in R11 umat temperature is named "temp", but in R13 it is "temper",  how to handle this, so we can use temp or temper for all
